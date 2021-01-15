@@ -1,6 +1,7 @@
 import java.util.List;
 import java.util.ArrayList;
 import java.nio.file.*;
+import java.nio.charset.StandardCharsets;
 import java.io.IOException;
 
 public class SQL_users {
@@ -16,10 +17,20 @@ public class SQL_users {
         return output;
     }
 
+    // Nimmt eine Liste von Strings entgegen und einen Dateinamen, ueberschreibt
+    // eine eventuell vorhandene Datei und schreibt die Liste zeilenweise hinein
+    public static void writeListToFile(List<String> toWrite, String filename) throws IOException {
+        Path file = Paths.get(filename);
+        Files.write(file, toWrite, StandardCharsets.UTF_8);
+    }
+
     public static void main(String[] args) throws IOException {
-        for (String line : readUserFile("userexample.csv")) {
+        List<String> lines = new ArrayList<String>();
+        lines = readUserFile("userexample.csv");
+        for (String line : lines) {
             System.out.println(line);
         }
+        writeListToFile(lines, "out.txt");
     }
 
 }
