@@ -24,22 +24,47 @@ public class SQL_users {
         Files.write(file, toWrite, StandardCharsets.UTF_8);
     }
 
-    public static List<String> createUser(List<String> userList) {
+    // Nimmt eine Liste von Zeilen aus der user-Datei entgegen, gibt eine Liste
+    // mit CREATE USER Befehlen und Passwoertern zurueck
+    public static List<String> createUserWithUsageRigths(List<String> userList, String databasename) {
         ArrayList<String> output = new ArrayList<String>();
         for (String line : userList) {
+            // so sollte eine Zeile aussehen:
+            // maxmustermann;maxspasswort;Max;Mustermann;123;m
+            // Hier interessant sind Name und Passwort an Position 0 und 1
             String[] userdata = line.split(";");
-            output.add(String.format("CREATE USER %s IDENTIFIED BY %s;", userdata[0], userdata[1]));
+            String username = userdata[0];
+            String password = userdata[1];
+
+            output.add(String.format("CREATE USER '%s'@'%%' IDENTIFIED BY '%s';", username, password));
+            output.add(String.format("GRANT SELECT, INSERT, UPDATE, DELETE ON `%s`.* TO '%s'@'%%' REQUIRE NONE WITH MAX_QUERIES_PER_HOUR 0 MAX_CONNECTIONS_PER_HOUR 0 MAX_UPDATES_PER_HOUR 0 MAX_USER_CONNECTIONS 0;", databasename, username));
         }
         return output;
     }
 
     public static void main(String[] args) throws IOException {
-        List<String> lines = new ArrayList<String>();
-        lines = readUserFile("userexample.csv");
-        for (String line : lines) {
-            System.out.println(line);
-        }
-        writeListToFile(createUser(lines), "out.txt");
+        if (args.length < 2) {
+            System.out.printf("Usage: java SQL_users file_with_userdata.csv databasesName%n");
+        } else {
+            String givenFileNameWithExtension = args[0];
+            String[] givenFile = givenFileNameWithExtension.split("\\.");
+            if (givenFile.length < 1) {
+                System.out.println("Please use a file extension");
+                return;
+            }
+            String givenFileName = givenFile[0];
+            String givenFileExtension = givenFile[1];
+            if (!givenFileExtension.equals("csv")) {
+                System.out.println("Must be a .csv-File!");
+                return;
+            }
+            String databasename = args[1];
+            
+            List<String> listOfUserdata = new ArrayList<String>();
+            listOfUserdata = readUserFile(givenFileNameWithExtension);
+            writeListToFile(createUserWithUsageRigths(listOfUserdata, databasename), givenFileName + ".sql");
     }
+        }
+        
 
 }
