@@ -42,6 +42,20 @@ public class SQL_users {
         return output;
     }
 
+    public static List<String> createUserLetters(List<String> userList) {
+        ArrayList<String> output = new ArrayList<String>();
+        for (String line : userList) {
+            String[] userdata = line.split(";");
+            String username = userdata[0];
+            String password = userdata[1];
+            String firstname = userdata[2];
+            String gender = userdata[4];
+
+            output.add((gender.equals("m") ? "Lieber " : "Liebe ") + firstname + ",%n%nDein Nutzername für den Datenbankzugriff ist:%n" + username + "%nDas Passwort lautet:%n" + password + "%nMit herzlichen Grüßen%n%n");
+        }
+        return output;
+    }
+
     public static void main(String[] args) throws IOException {
         if (args.length < 2) {
             System.out.printf("Usage: java SQL_users file_with_userdata.csv databasesName%n");
@@ -63,8 +77,9 @@ public class SQL_users {
             List<String> listOfUserdata = new ArrayList<String>();
             listOfUserdata = readUserFile(givenFileNameWithExtension);
             writeListToFile(createUserWithUsageRigths(listOfUserdata, databasename), givenFileName + ".sql");
-    }
+            writeListToFile(createUserLetters(listOfUserdata), givenFileName + ".txt");
         }
+    }
         
 
 }
