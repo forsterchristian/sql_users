@@ -30,7 +30,7 @@ public class SQL_users {
         ArrayList<String> output = new ArrayList<String>();
         for (String line : userList) {
             // so sollte eine Zeile aussehen:
-            // maxmustermann;maxspasswort;Max;Mustermann;123;m
+            // maxmustermann;maxspasswort;Max;Mustermann;m;123
             // Hier interessant sind Name und Passwort an Position 0 und 1
             String[] userdata = line.split(";");
             String username = userdata[0];
@@ -49,7 +49,7 @@ public class SQL_users {
             String username = userdata[0];
             String password = userdata[1];
             String firstname = userdata[2];
-            String gender = userdata[5];
+            String gender = userdata[4];
 
             output.add(String.format("%s %s,%n%nDein Nutzername für den Datenbankzugriff ist:%n%s%nDas Passwort lautet:%n%s%nMit herzlichen Grüßen%n%n", ((gender.equals("m")) ? "Lieber" : "Liebe"), firstname, username, password));
         }
