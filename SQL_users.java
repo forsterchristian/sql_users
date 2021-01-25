@@ -36,8 +36,9 @@ public class SQL_users {
             String username = userdata[0];
             String password = userdata[1];
 
-            output.add(String.format("CREATE USER '%s'@'%%' IDENTIFIED BY '%s';", username, password));
-            output.add(String.format("GRANT SELECT, INSERT, UPDATE, DELETE ON `%s`.* TO '%s'@'%%' REQUIRE NONE WITH MAX_QUERIES_PER_HOUR 0 MAX_CONNECTIONS_PER_HOUR 0 MAX_UPDATES_PER_HOUR 0 MAX_USER_CONNECTIONS 0;", databasename, username));
+            //output.add(String.format("CREATE USER '%s'@'%%' IDENTIFIED BY '%s';", username, password));
+            //output.add(String.format("GRANT SELECT, INSERT, UPDATE, DELETE ON `%s`.* TO '%s'@'%%' REQUIRE NONE WITH MAX_QUERIES_PER_HOUR 0 MAX_CONNECTIONS_PER_HOUR 0 MAX_UPDATES_PER_HOUR 0 MAX_USER_CONNECTIONS 0;", databasename, username));
+            output.add(String.format("GRANT CREATE ON `%s`.* TO '%s'@'%%';", databasename, username))
         }
         return output;
     }
